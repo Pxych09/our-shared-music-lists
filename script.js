@@ -48,6 +48,7 @@ const who = $('#who');
 const loginForm = $('#loginForm');
 const addForm = $('#addForm');
 // const listEl = $('#list');
+const countData = $('#countData');
 
 // ===== UI helpers =====
 const show = (el, yes) => el.classList.toggle('hidden', !yes);
@@ -210,6 +211,18 @@ const editBtn = document.createElement('button');
 const loadList = async () => {
   listEl.innerHTML = '<p class="muted fetch-mute">Fetching for lists of music, please wait...</p>';
   const r = await getJSON({ action: 'lists' });
+
+
+  if(r.data.length >= 2) {
+    countData.innerText = `There are currently ${r.data.length} songs in your lists.`
+  } else if (r.data.length == 1) {
+    countData.innerText = `There is only ${r.data.length} song in your list. I suggest, add more!`
+  } else {
+    countData.innerText = `There is none or ${r.data.length} data in your list. Add a list now?`
+  }
+
+  console.log(r.data, " => data")
+  console.log(r.data.length, " => data length.")
   if (r.ok) {
     listEl.innerHTML = '';
     r.data.forEach(row => listEl.append(songItem(row)));
@@ -270,20 +283,6 @@ addForm.addEventListener('submit', async (e) => {
     toast(r.error || 'Failed to add', 'error');
   }
 });
-
-const stickyHeader = document.querySelector(".sticky-header");
-
-window.addEventListener("scroll", () => {
-  console.log(window.screenY, " scrolling down")
-  if (window.scrollY > 50) {
-    stickyHeader.classList.add("sticky-style");
-    stickyHeader.style.paddingInline = "1.55em";
-  } else {
-    stickyHeader.classList.remove("sticky-style");
-    stickyHeader.style.paddingInline = "0em";
-  }
-});
-
 
 function runConfetti() {
   const duration = 1.5 * 1000;
