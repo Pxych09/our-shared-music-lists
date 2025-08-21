@@ -322,11 +322,21 @@ button:active{ transform: translateY(1px); }
   }
   .song-list .song-container > .list-buttons{
     /* border: 1px solid blue; */
-    grid-area: 2 / 1 / span 1/ span 2;
+    grid-area: 2 / 1 / span 1 / span 2;
     display: flex;
     justify-content: flex-end;
     gap: .5em;
   }
+  
+  .song-list .song-container > .commentRemark{
+    /* border: 1px solid blue; */
+    grid-area: 4 / 1 / span 1 / span 2;
+    display: flex;
+    justify-content: flex-end;
+    gap: .5em;
+    padding-block: .65em;
+  }
+
   .song {
     cursor: pointer;
   }
@@ -369,13 +379,36 @@ button:active{ transform: translateY(1px); }
     color: #111827;
     font-weight: 600;
   }
-  :where(.list-buttons) > button {
+
+  /* size of buttons */
+  :where(.list-buttons) > button,
+  .comment-btn, #logoutBtn {
     padding: 0rem;
     width: 64px; height: 28px;
     font-size: .75em;
     border-radius: 6px;
   }
   
+  .commentRemark > textarea {
+    width: 75%;
+    border-radius: 6px;
+    height: 28px;
+    /* text-transform: capitalize; */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: transparent;
+    color: #444;
+    border: 0; outline: 0;
+    border: .5px solid #444;
+    font-size: .65em;
+    display: flex;
+    align-items: center;
+    vertical-align: middle;
+    padding: .5em;
+  }
+  .comment-btn {
+    width: 25%; height: 28px;
+  }
+
   :where(.accordion, .timestamp) {
     scale: 1 -1;
     height: 0vh;
@@ -450,6 +483,45 @@ button:active{ transform: translateY(1px); }
   #loginForm button {
     width: 100%;
     margin-top: 1em;
+  }
+  
+  #addForm > button {
+    margin-top: .90em;
+  }
+  .song-container > .ul-comments {
+    width: 100%;
+    grid-area: 5 / 1 / span 1 / span 2;
+    display: flex;
+    flex-direction: column;  /* stack children vertically */
+    gap: 0.5em;              /* add spacing between them */
+  }
+  .li-comments, .no-comments {
+    height: 100%;
+    border: 1px solid #888;
+    padding: .25em .35em;
+    width: 100%;
+    display: flex;
+    color: #334155;
+  }
+  :is(.li-comments, .no-comments) > div{
+    /* border: 1px solid red; */
+    font-size: .55em;
+    display: flex; 
+    align-items: center;
+  }
+  :is(.li-comments, .no-comments) > div:nth-child(2){
+    flex: 1;
+  }
+  .li-comments > div:last-child{
+    font-size: .45em;
+    color: #3c485a;
+  }
+  .comment-user {
+    text-transform: capitalize;
+    padding-right: .5em;
+  }
+  .no-comments {
+    border: 0;
   }
 
 } /* ---------- END POINT OF MOBILE MEDIA QUERY ---------- */

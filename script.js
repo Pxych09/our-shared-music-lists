@@ -38,6 +38,7 @@ const getJSON = async (params = {}) => {
 
 // ===== State =====
 let CURRENT_USER = null;
+let ALL_COMMENTS = []; // Store all comments globally
 
 // ===== DOM =====
 const $ = (sel) => document.querySelector(sel);
@@ -94,6 +95,35 @@ const formatDateTime = (isoString) => {
   });
 };
 
+// ===== Comment helpers =====
+const getCommentsForSong = (songId) => {
+  return ALL_COMMENTS.filter(comment => String(comment.id) === String(songId));
+};
+
+const addCommentToSong = async (songId, commentText) => {
+  if (!commentText.trim()) {
+    toast('Please enter a comment', 'error');
+    return false;
+  }
+
+  const result = await post({
+    action: 'addcomment',
+    id: songId,
+    user: CURRENT_USER,
+    comment: commentText.trim()
+  });
+
+  if (result.ok) {
+    toast('Comment added!', 'success');
+    // Reload comments and refresh the list
+    await loadList();
+    return true;
+  } else {
+    toast(result.error || 'Failed to add comment', 'error');
+    return false;
+  }
+};
+
 const listEl = $('#list'); 
 const songItem = (row) => {
   const containerSong = document.createElement('div');
@@ -103,6 +133,10 @@ const songItem = (row) => {
   const artistDetail = document.createElement('div');
   const timestampDetail = document.createElement('div');
   const accordionDetail = document.createElement('div');
+
+  const commentRemark = document.createElement('div');
+  const ulComments = document.createElement('div');
+
   containerSong.classList.add('song-container')
   listButtons.classList.add('list-buttons')
   accordionDetail.classList.add('accordion')
@@ -110,11 +144,59 @@ const songItem = (row) => {
   artistDetail.classList.add('artist')
   timestampDetail.classList.add('timestamp')
   panelDetails.classList.add('panel')
+  commentRemark.classList.add('commentRemark')
+  ulComments.classList.add('ul-comments')
 
-  songDetail.innerHTML = `${row.Song}`
-  artistDetail.innerHTML = `${row.Artist}`
-  panelDetails.innerHTML = `Created by: <span>${row['Created By'] || "-"}</span><br>Edited by: <span>${row['Edited By']|| "-"}</span>`
-  timestampDetail.innerHTML = `${formatDateTime(row['Timestamp'])} <img src="https://cdn-icons-png.flaticon.com/512/6255/6255820.png" alt="icon" width="10" height="10">`
+  songDetail.innerHTML = `${row.song || row.Song || 'Unknown Song'}`
+  artistDetail.innerHTML = `${row.artist || row.Artist || 'Unknown Artist'}`
+  panelDetails.innerHTML = `Created by: <span>${row['created by'] || row['Created By'] || "-"}</span><br>Edited by: <span>${row['edited by'] || row['Edited By'] || "-"}</span>`
+  timestampDetail.innerHTML = `${formatDateTime(row.timestamp || row.Timestamp)} <img src="https://cdn-icons-png.flaticon.com/512/6255/6255820.png" alt="icon" width="10" height="10">`
+
+  // Create comment input area
+  const commentTextarea = document.createElement('textarea');
+  commentTextarea.className = 'user-comment';
+  commentTextarea.rows = 1;
+  commentTextarea.name = 'comment-area'
+  commentTextarea.placeholder = 'Add a comment...';
+
+  const commentBtn = document.createElement('button');
+  commentBtn.textContent = 'Comment';
+  commentBtn.className = 'comment-btn';
+
+  commentRemark.appendChild(commentTextarea);
+  commentRemark.appendChild(commentBtn);
+
+  // Add comment button handler
+  commentBtn.addEventListener('click', async () => {
+    const songId = row.id || row.ID;
+    const success = await addCommentToSong(songId, commentTextarea.value);
+    if (success) {
+      commentTextarea.value = ''; // Clear the textarea
+    }
+  });
+
+  // Load and display existing comments for this song
+  const songId = row.id || row.ID;
+  const songComments = getCommentsForSong(songId);
+  ulComments.innerHTML = ''; // Clear previous comments
+
+  if (songComments.length === 0) {
+    const noComments = document.createElement('div');
+    noComments.className = 'no-comments';
+    noComments.textContent = '';
+    ulComments.appendChild(noComments);
+  } else {
+    songComments.forEach(comment => {
+      const commentDiv = document.createElement('div');
+      commentDiv.className = 'li-comments';
+      commentDiv.innerHTML = `
+        <div class="comment-user"><strong>${comment.username || 'Anonymous'}: </strong></div>
+        <div class="comment-text">${comment.comment || ''}</div>
+        <div class="comment-date">${formatDateTime(comment.timestamp)}</div>
+      `;
+      ulComments.appendChild(commentDiv);
+    });
+  }
 
   songDetail.addEventListener('click', e => {
     e.preventDefault();
@@ -126,12 +208,16 @@ const songItem = (row) => {
   editBtn.className = 'btn-success';
   editBtn.textContent = 'Edit';
   editBtn.addEventListener('click', async () => {
-    const newSong = prompt('New song title:', row.Song);
+    const currentSong = row.song || row.Song || '';
+    const currentArtist = row.artist || row.Artist || '';
+    const songId = row.id || row.ID;
+    
+    const newSong = prompt('New song title:', currentSong);
     if (newSong === null) return;
-    const newArtist = prompt('New artist:', row.Artist);
+    const newArtist = prompt('New artist:', currentArtist);
     if (newArtist === null) return;
 
-    const r = await post({ action: 'editsong', id: row.ID, song: newSong, artist: newArtist, user: CURRENT_USER });
+    const r = await post({ action: 'editsong', id: songId, song: newSong, artist: newArtist, user: CURRENT_USER });
     if (r.ok) {
       toast('Song updated!', 'success');
       await loadList();
@@ -145,7 +231,8 @@ const songItem = (row) => {
   delBtn.textContent = 'Delete';
   delBtn.addEventListener('click', async () => {
     if (!confirm('Delete this item?')) return;
-    const r = await post({ action: 'deletesong', id: row.ID });
+    const songId = row.id || row.ID;
+    const r = await post({ action: 'deletesong', id: songId });
     if (r.ok) {
       toast('Song deleted!', 'success');
       await loadList();
@@ -156,15 +243,29 @@ const songItem = (row) => {
 
   listButtons.append(editBtn, delBtn);
   accordionDetail.append(panelDetails);
-  containerSong.append(songDetail, artistDetail, listButtons, accordionDetail, timestampDetail);
+  containerSong.append(songDetail, artistDetail, listButtons, accordionDetail, timestampDetail, commentRemark, ulComments);
   return containerSong;
 }
 
 // ===== Data loaders =====
 const loadList = async () => {
   listEl.innerHTML = '<p class="muted fetch-mute">Fetching for lists of music, please wait...</p>';
+  
+  // Load songs
   const r = await getJSON({ action: 'lists' });
+  
+  // Load all comments (FIXED: removed incorrect addcomment call)
+  const commentsResponse = await getJSON({ action: "getcomments" });
+  console.log('Comments loaded:', commentsResponse);
+  
+  if (commentsResponse.ok) {
+    ALL_COMMENTS = commentsResponse.comments || [];
+  } else {
+    console.error('Failed to load comments:', commentsResponse.error);
+    ALL_COMMENTS = [];
+  }
 
+  // Update count display
   if(r.data.length >= 2) {
     countData.innerText = `There are currently ${r.data.length} songs in your lists.`
   } else if (r.data.length == 1) {
@@ -186,7 +287,7 @@ let sessionTimer = null;
 let warningTimer = null;
 let countdownInterval = null;
 
-const SESSION_TIMEOUT = 1 * 60 * 1000; // 1 minute
+const SESSION_TIMEOUT = 5 * 60 * 1000; // 5 minutes
 const WARNING_TIME = 30 * 1000;        // warn 30s before
 
 function resetSessionTimer() {
@@ -199,10 +300,6 @@ function resetSessionTimer() {
   const now = new Date();
   const warnAt = new Date(now.getTime() + (SESSION_TIMEOUT - WARNING_TIME));
   const expireAt = new Date(now.getTime() + SESSION_TIMEOUT);
-
-  console.log(`[Session] Reset at ${now.toLocaleTimeString()}`);
-  console.log(`[Session] Warning at ${warnAt.toLocaleTimeString()}`);
-  console.log(`[Session] Expire at ${expireAt.toLocaleTimeString()}`);
 
   // ⏳ Warning before timeout
   warningTimer = setTimeout(() => {
