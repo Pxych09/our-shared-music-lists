@@ -77,6 +77,19 @@
   <button id="goTopBtn" title="Go to top">
     <img src="https://cdn-icons-png.flaticon.com/512/992/992534.png" alt="icon" width="20" height="20">
   </button>
+
+    <!-- Session Warning Modal -->
+  <div id="sessionModal" class="modal hidden">
+    <div class="modal-content">
+      <h2>⚠️ Session Expiring Soon ⚠️</h2>
+      <p>Your session will expire in <span id="countdown">60</span> seconds.</p>
+      <div class="modal-actions">
+        <button id="stayLoggedInBtn" class="btn-primary">Stay Logged In</button>
+        <button id="logoutNowBtn" class="btn-secondary">Logout Now!</button>
+      </div>
+    </div>
+  </div>
+
   
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
   <script src="script.js"></script>

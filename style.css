@@ -355,6 +355,7 @@ button:active{ transform: translateY(1px); }
   .artist {
     justify-self: flex-end;
     font-size: .80em;
+    text-transform: capitalize;
   }
   .song{
     font-size: .95em;
@@ -446,6 +447,10 @@ button:active{ transform: translateY(1px); }
     font-size: .80em;
     color: #334155;
   }
+  #loginForm button {
+    width: 100%;
+    margin-top: 1em;
+  }
 
 } /* ---------- END POINT OF MOBILE MEDIA QUERY ---------- */
 
@@ -479,4 +484,66 @@ button:active{ transform: translateY(1px); }
 
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+
+/* Modal Background */
+.modal {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(6px);
+  z-index: 1000;
+}
+
+/* Hide modal by default */
+.hidden { display: none; }
+
+/* Modal Box */
+.modal-content {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
+}
+.modal-content > * {
+  display: flex;
+  gap: .25em;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content > p {
+  font-size: .80em;
+}
+.modal-actions > button {
+  font-size: .70em;
+}
+
+.modal-content h2 {
+  margin-bottom: 1rem;
+  font-size: .95rem;
+  color: #d9534f;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-actions {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: space-around;
+}
+
+body.modal-open #app,
+body.modal-open #auth {
+  filter: blur(5px);
+  pointer-events: none;
+  user-select: none;
 }
