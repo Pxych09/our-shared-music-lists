@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Music Shared Lists</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/12750/12750997.png" type="image/png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <!-- Login Section -->
+  <section id="auth" class="centered">
+    <h1>Good to see you again!</h1>
+    <span class="extra-text">Let's start listing down our favorite songs!</span>
+
+    <form id="loginForm" class="card form-auth">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input id="username" type="text" autocomplete="username" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input id="password" type="password" required>
+      </div>
+        
+      <button type="submit" class="btn-primary">Login</button>
+    </form>
+    <span></span>
+    <!-- <p id="authMsg" class="muted" aria-live="polite"></p> -->
+  </section>
+
+  <!-- App Section -->
+  <main id="app" class="hidden">
+
+    <div class="sticky-header">
+      <button id="logoutBtn" class="btn-secondary">Logout</button>
+    </div>
+
+    <div class="web-header">
+      <h1>🎵 Music Shared Lists:</h1>
+      <h6>Welcome, <span id="who"></span></h6>
+    </div>
+
+    <!-- Add Form -->
+    <form id="addForm" class="card form-add">
+      <label for="song">Song</label>
+      <input id="song" type="text" placeholder="" required>
+      
+      <label for="artist">Artist</label>
+      <input id="artist" type="text" placeholder="" required>
+      <button type="submit" class="btn-primary">
+        Add to playlist
+      </button>
+    </form>
+
+    <div id="list" class="song-list">
+
+    </div>
+
+    <!-- Song List -->
+    <!-- <ul id="list" class="song-list"></ul> -->
+
+  </main>
+
+  <!-- Loading Modal -->
+  <div id="loading" class="loading-overlay hidden">
+    <div class="spinner"></div>
+    <p>Loading... Please wait.</p>
+  </div>
+
+  <!-- Go to Top Button -->
+  <button id="goTopBtn" title="Go to top">
+    <img src="https://cdn-icons-png.flaticon.com/512/992/992534.png" alt="icon" width="20" height="20">
+  </button>
+  
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
