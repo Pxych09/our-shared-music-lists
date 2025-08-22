@@ -3,6 +3,35 @@ const CONFIG = {
   BASE_URL: 'https://script.google.com/macros/s/AKfycbzlql7i4j5c1yrBrywuAsTqxmsciAaZopjkzTtM15KR4g-_S8W9F6VgfO-cW-HtMfE/exec'
 };
 
+// ===== Loading State Management =====
+let activeRequests = 0;
+let loadingTimeout = null;
+
+const showLoading = (show) => {
+  const loadingEl = document.getElementById('loading');
+  if (!loadingEl) return;
+
+  if (show) {
+    activeRequests++;
+    // Clear any pending hide timeout
+    if (loadingTimeout) {
+      clearTimeout(loadingTimeout);
+      loadingTimeout = null;
+    }
+    // Show loading immediately
+    loadingEl.classList.remove('hidden');
+  } else {
+    activeRequests--;
+    if (activeRequests <= 0) {
+      activeRequests = 0; // Prevent negative values
+      // Add small delay before hiding to prevent flickering
+      loadingTimeout = setTimeout(() => {
+        loadingEl.classList.add('hidden');
+      }, 100);
+    }
+  }
+};
+
 // ===== Fetch helpers =====
 const post = async (payload) => {
   try {
@@ -68,12 +97,6 @@ const toast = (msg, type = 'info') => {
     t.classList.remove('show');
     setTimeout(() => t.remove(), 300);
   }, 2500);
-};
-
-// ===== Loading UI =====
-const showLoading = (yes) => {
-  const loadingEl = document.getElementById('loading');
-  if (loadingEl) loadingEl.classList.toggle('hidden', !yes);
 };
 
 // =======================
@@ -251,11 +274,12 @@ const songItem = (row) => {
 const loadList = async () => {
   listEl.innerHTML = '<p class="muted fetch-mute">Fetching for lists of music, please wait...</p>';
   
-  // Load songs
-  const r = await getJSON({ action: 'lists' });
+  // Load songs and comments simultaneously for better performance
+  const [songsResponse, commentsResponse] = await Promise.all([
+    getJSON({ action: 'lists' }),
+    getJSON({ action: "getcomments" })
+  ]);
   
-  // Load all comments (FIXED: removed incorrect addcomment call)
-  const commentsResponse = await getJSON({ action: "getcomments" });
   console.log('Comments loaded:', commentsResponse);
   
   if (commentsResponse.ok) {
@@ -266,19 +290,19 @@ const loadList = async () => {
   }
 
   // Update count display
-  if(r.data.length >= 2) {
-    countData.innerText = `There are currently ${r.data.length} songs in your lists.`
-  } else if (r.data.length == 1) {
-    countData.innerText = `There is only ${r.data.length} song in your list. I suggest, add more!`
+  if(songsResponse.data.length >= 2) {
+    countData.innerText = `There are currently ${songsResponse.data.length} songs in your lists.`
+  } else if (songsResponse.data.length == 1) {
+    countData.innerText = `There is only ${songsResponse.data.length} song in your list. I suggest, add more!`
   } else {
-    countData.innerText = `There is none or ${r.data.length} data in your list. Add a list now?`
+    countData.innerText = `There is none or ${songsResponse.data.length} data in your list. Add a list now?`
   }
 
-  if (r.ok) {
+  if (songsResponse.ok) {
     listEl.innerHTML = '';
-    r.data.forEach(row => listEl.append(songItem(row)));
+    songsResponse.data.forEach(row => listEl.append(songItem(row)));
   } else {
-    listEl.innerHTML = `<p class="muted">${r.error || 'Failed to load list.'}</p>`;
+    listEl.innerHTML = `<p class="muted">${songsResponse.error || 'Failed to load list.'}</p>`;
   }
 };
 

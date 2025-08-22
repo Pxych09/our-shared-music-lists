@@ -34,8 +34,10 @@ html, body {
 body{
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;
   background: radial-gradient(1200px 600px at 20% -10%, #e8eefc 0%, transparent 60%) , var(--bg-light);
+  background-repeat: no-repeat;
+  min-height: 100vh;
   color: var(--text);
-  line-height: 1.6;
+  /* line-height: 1.6; */
 }
 
 /* ---------- Headings ---------- */
@@ -235,16 +237,17 @@ button:active{ transform: translateY(1px); }
 
 
 
-
-
-
-
-
-
-
-
-
-
+/* ---------- LARGER SIZE SCREEN OFF ---------- */
+@media (min-width: 721px) {
+  body {
+    background-color: #111827; color: black;
+  }
+  body * {
+    display: none; scale: 0;
+    background-color: none;
+    background-repeat: no-repeat;
+  }
+}
 
 /* ---------- Responsive ---------- */
 @media (max-width: 720px){
@@ -534,7 +537,7 @@ button:active{ transform: translateY(1px); }
 .loading-overlay {
   position: fixed;
   inset: 0;
-  background: black;
+  background: #10151b;
   display: flex;
   flex-direction: column;
   align-items: center;
