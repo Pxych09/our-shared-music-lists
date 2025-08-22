@@ -2,6 +2,9 @@
    Modern, neat, responsive UI
    ======================== */
 
+  @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 /* ---------- Theme ---------- */
 :root{
   --primary: #2563eb;
@@ -21,6 +24,8 @@
   --shadow: 0 8px 24px rgba(17, 24, 39, .06);
   --gap: .75rem;
   --control-h: 44px;
+  --font-fam: "Poppins", sans-serif; 
+  --font-nunito: "Nunito", sans-serif;
 }
 
 * { box-sizing: border-box; }
@@ -54,7 +59,7 @@ section, main{
   margin: 2rem auto;
   padding: 1.25rem;
   background: var(--bg-white);
-  border: 1px solid #eef2ff;
+  border: 1px solid #bdc8ef;
   border-radius: var(--radius);
   box-shadow: var(--shadow);
 }
@@ -251,6 +256,16 @@ button:active{ transform: translateY(1px); }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 720px){
+  body {
+    background: linear-gradient(
+    135deg,          /* angle of the gradient */
+    #80e1ffb0,
+    #9bedffb6,
+    #bdf3ffc5,
+    #80e1ff86,
+    #bdf3ff
+    );
+  }
   section, main{
     margin: 1rem;
     padding: 1rem;
@@ -390,6 +405,7 @@ button:active{ transform: translateY(1px); }
     width: 64px; height: 28px;
     font-size: .75em;
     border-radius: 6px;
+    font-family: var(--font-fam);
   }
   
   .commentRemark > textarea {
@@ -397,11 +413,12 @@ button:active{ transform: translateY(1px); }
     border-radius: 6px;
     height: 28px;
     /* text-transform: capitalize; */
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: var(--font-fam);
     background-color: transparent;
-    color: #444;
+    /* color: #444; */
+    /* color: #010101; */
     border: 0; outline: 0;
-    border: .5px solid #444;
+    /* border: .5px solid #444; */
     font-size: .65em;
     display: flex;
     align-items: center;
@@ -475,7 +492,7 @@ button:active{ transform: translateY(1px); }
   .dashboard > div > h6 {
     margin: 0;
     color: #334155;
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-family: var(--font-fam);
     font-weight: 550;
     line-height: 18pt;
   }
@@ -487,7 +504,6 @@ button:active{ transform: translateY(1px); }
     width: 100%;
     margin-top: 1em;
   }
-  
   #addForm > button {
     margin-top: .90em;
   }
@@ -496,11 +512,13 @@ button:active{ transform: translateY(1px); }
     grid-area: 5 / 1 / span 1 / span 2;
     display: flex;
     flex-direction: column;  /* stack children vertically */
-    gap: 0.5em;              /* add spacing between them */
+    gap: 0.25em;
+    /* border: .25px solid #2b7053;  */
+    border-bottom: 0;             /* add spacing between them */
   }
   .li-comments, .no-comments {
     height: 100%;
-    border: 1px solid #888;
+    border-bottom: 1px solid #2b7053;
     padding: .25em .35em;
     width: 100%;
     display: flex;
@@ -515,16 +533,60 @@ button:active{ transform: translateY(1px); }
   :is(.li-comments, .no-comments) > div:nth-child(2){
     flex: 1;
   }
-  .li-comments > div:last-child{
+  .li-comments > .comment-text {
+    font-size: .55em;
+    color: #010101;
+    font-weight: 600;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: block;
+  }
+  .li-comments > .comment-text > span{
     font-size: .45em;
-    color: #3c485a;
+    color: #3c485aab;
+    padding-inline: .2em;
+    /* background-color: red; */
+    /* vertical-align: bottom;
+    align-self: flex-end; */
   }
   .comment-user {
     text-transform: capitalize;
-    padding-right: .5em;
+    padding-right: .45em;
+    color: #042884;
   }
-  .no-comments {
+  .ul-comments.has-no-comments {
     border: 0;
+    /* background-color: red; */
+  }
+  .ul-comments > :where(.no-comments) {
+    border: 0;
+    /* background-color: red; */
+    /* background-color: red; */
+    font-size: .65em;
+  }
+  textarea.user-comment {
+    /* background-color: red; */
+    border: 1px solid #010101;
+    color: #010101;
+  }
+  
+  /* ----------------- override font family  ----------------- */
+  #loginForm :is(input, button, label), 
+  #auth h1{
+    font-family: var(--font-fam);
+  }
+  #loginForm :is(input, button, label){
+    font-size: .85em;
+  }
+  #addForm :where(label, input, button),
+  .web-header :where(h1, h6),
+  .sticky-header button, textarea{
+    font-family: var(--font-fam);
+  }
+  .song-container :is(.song, .artist) {
+    font-family: var(--font-fam);
+  }
+  .li-comments * {
+    font-family: var(--font-nunito);
   }
 
 } /* ---------- END POINT OF MOBILE MEDIA QUERY ---------- */

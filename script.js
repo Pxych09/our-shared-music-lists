@@ -118,6 +118,47 @@ const formatDateTime = (isoString) => {
   });
 };
 
+const timeAgo = (isoString) => {
+  if (!isoString) return "";
+
+  const now = new Date();
+  const past = new Date(isoString);
+  const diffInMs = now - past;
+  const diffInSeconds = Math.floor(diffInMs / 1000);
+
+  if (diffInSeconds < 60) {
+    return diffInSeconds <= 1 ? "just now" : `${diffInSeconds}s ago`;
+  }
+
+  const diffInMinutes = Math.floor(diffInSeconds / 60);
+  if (diffInMinutes < 60) {
+    return diffInMinutes === 1 ? "1 min ago" : `${diffInMinutes} mins ago`;
+  }
+
+  const diffInHours = Math.floor(diffInMinutes / 60);
+  if (diffInHours < 24) {
+    return diffInHours === 1 ? "1 hr ago" : `${diffInHours} hrs ago`;
+  }
+
+  const diffInDays = Math.floor(diffInHours / 24);
+  if (diffInDays < 7) {
+    return diffInDays === 1 ? "1 day ago" : `${diffInDays} days ago`;
+  }
+
+  const diffInWeeks = Math.floor(diffInDays / 7);
+  if (diffInWeeks < 4) {
+    return diffInWeeks === 1 ? "1 week ago" : `${diffInWeeks} weeks ago`;
+  }
+
+  const diffInMonths = Math.floor(diffInDays / 30);
+  if (diffInMonths < 12) {
+    return diffInMonths === 1 ? "1 month ago" : `${diffInMonths} months ago`;
+  }
+
+  const diffInYears = Math.floor(diffInDays / 365);
+  return diffInYears === 1 ? "1 year ago" : `${diffInYears} years ago`;
+};
+
 // ===== Comment helpers =====
 const getCommentsForSong = (songId) => {
   return ALL_COMMENTS.filter(comment => String(comment.id) === String(songId));
@@ -180,7 +221,7 @@ const songItem = (row) => {
   commentTextarea.className = 'user-comment';
   commentTextarea.rows = 1;
   commentTextarea.name = 'comment-area'
-  commentTextarea.placeholder = 'Add a comment...';
+  commentTextarea.placeholder = 'write a comment...';
 
   const commentBtn = document.createElement('button');
   commentBtn.textContent = 'Comment';
@@ -207,6 +248,7 @@ const songItem = (row) => {
     const noComments = document.createElement('div');
     noComments.className = 'no-comments';
     noComments.textContent = '';
+    ulComments.classList.add('has-no-comments');
     ulComments.appendChild(noComments);
   } else {
     songComments.forEach(comment => {
@@ -214,9 +256,9 @@ const songItem = (row) => {
       commentDiv.className = 'li-comments';
       commentDiv.innerHTML = `
         <div class="comment-user"><strong>${comment.username || 'Anonymous'}: </strong></div>
-        <div class="comment-text">${comment.comment || ''}</div>
-        <div class="comment-date">${formatDateTime(comment.timestamp)}</div>
+        <div class="comment-text">${comment.comment || ''} <span>(${timeAgo(comment.timestamp)})</span></div>
       `;
+      ulComments.classList.remove('has-no-comments')
       ulComments.appendChild(commentDiv);
     });
   }
