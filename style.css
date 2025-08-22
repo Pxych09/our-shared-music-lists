@@ -509,7 +509,7 @@ button:active{ transform: translateY(1px); }
   }
   .song-container > .ul-comments {
     width: 100%;
-    grid-area: 5 / 1 / span 1 / span 2;
+    grid-area: 6 / 1 / span 1 / span 2;
     display: flex;
     flex-direction: column;  /* stack children vertically */
     gap: 0.25em;
@@ -582,11 +582,40 @@ button:active{ transform: translateY(1px); }
   .sticky-header button, textarea{
     font-family: var(--font-fam);
   }
-  .song-container :is(.song, .artist) {
+  .song-container :is(.song, .artist),
+  .accordion * {
     font-family: var(--font-fam);
   }
   .li-comments * {
     font-family: var(--font-nunito);
+  }
+  .commentRemark button.comment-btn {
+    /* padding-inline: 1.5em; */
+    width: 94px;
+  }
+  .song-container .artist {
+    font-size: .55em;
+  }
+  .song-container .song {
+    font-size: .75em;
+  }
+  .list-buttons {
+    padding-top: .5em;
+  }
+  .accordion .panel {
+    font-size: .75em;
+    padding-left: .65em;
+  }
+  .stats-comments {
+    border: .5px dotted #334155;
+    display: grid; place-items: center;
+    font-family: var(--font-nunito);
+    font-size: .55em;
+    padding: 3px;
+    justify-self: end;
+    color: #334155;
+    margin-inline: .5em;
+    grid-area: 5 / 1 / span 1 / span 2;
   }
 
 } /* ---------- END POINT OF MOBILE MEDIA QUERY ---------- */

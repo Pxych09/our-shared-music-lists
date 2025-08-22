@@ -200,6 +200,7 @@ const songItem = (row) => {
 
   const commentRemark = document.createElement('div');
   const ulComments = document.createElement('div');
+  const statComments = document.createElement('div');
 
   containerSong.classList.add('song-container')
   listButtons.classList.add('list-buttons')
@@ -210,6 +211,7 @@ const songItem = (row) => {
   panelDetails.classList.add('panel')
   commentRemark.classList.add('commentRemark')
   ulComments.classList.add('ul-comments')
+  statComments.classList.add('stats-comments') // total comments in a song or per song
 
   songDetail.innerHTML = `${row.song || row.Song || 'Unknown Song'}`
   artistDetail.innerHTML = `${row.artist || row.Artist || 'Unknown Artist'}`
@@ -243,6 +245,16 @@ const songItem = (row) => {
   const songId = row.id || row.ID;
   const songComments = getCommentsForSong(songId);
   ulComments.innerHTML = ''; // Clear previous comments
+  
+  // ===== UPDATED: Show actual comment count =====
+  const commentCount = songComments.length;
+  if (commentCount === 0) {
+    statComments.innerHTML = "No comments yet.";
+  } else if (commentCount === 1) {
+    statComments.innerHTML = "1 comment.";
+  } else {
+    statComments.innerHTML = `${commentCount} comments.`;
+  }
 
   if (songComments.length === 0) {
     const noComments = document.createElement('div');
@@ -308,7 +320,7 @@ const songItem = (row) => {
 
   listButtons.append(editBtn, delBtn);
   accordionDetail.append(panelDetails);
-  containerSong.append(songDetail, artistDetail, listButtons, accordionDetail, timestampDetail, commentRemark, ulComments);
+  containerSong.append(songDetail, artistDetail, listButtons, accordionDetail, timestampDetail, commentRemark, ulComments, statComments);
   return containerSong;
 }
 
