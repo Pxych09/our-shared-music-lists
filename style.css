@@ -538,19 +538,20 @@ button:active{ transform: translateY(1px); }
     color: #010101;
     font-weight: 600;
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    display: block;
+    display: grid;
+    padding-block: .5em;
   }
   .li-comments > .comment-text > span{
-    font-size: .45em;
-    color: #3c485aab;
+    font-size: .35em;
+    color: #343e48ab;
     padding-inline: .2em;
+    font-family: unset; font-weight: unset;
     /* background-color: red; */
     /* vertical-align: bottom;
     align-self: flex-end; */
   }
   .comment-user {
     text-transform: capitalize;
-    padding-right: .45em;
     color: #042884;
   }
   .ul-comments.has-no-comments {
@@ -586,8 +587,22 @@ button:active{ transform: translateY(1px); }
   .accordion * {
     font-family: var(--font-fam);
   }
-  .li-comments * {
-    font-family: var(--font-nunito);
+  .li-comments{
+    /* border: 1px solid red; */
+    font-family: unset;
+    padding: 0; 
+    overflow: hidden;
+  }
+  .comment-user {
+    background-color: #dff9e4;
+    padding: 0;
+    padding-inline: .65em;
+    /* border-radius: 6px 0px 0px 6px; */
+    width: 37px; height: 25px;
+  }
+  .comment-text {
+    padding: 0;
+    padding-inline: .5em;
   }
   .commentRemark button.comment-btn {
     /* padding-inline: 1.5em; */
@@ -615,6 +630,7 @@ button:active{ transform: translateY(1px); }
     justify-self: end;
     color: #334155;
     margin-inline: .5em;
+    margin-bottom: .5em;
     grid-area: 5 / 1 / span 1 / span 2;
   }
 
