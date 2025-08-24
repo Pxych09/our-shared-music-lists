@@ -634,6 +634,20 @@ button:active{ transform: translateY(1px); }
     margin-bottom: .5em;
     grid-area: 5 / 1 / span 1 / span 2;
   }
+  #webSheetLink {
+    margin-block: 1em;
+    border-block: 2px dotted rgba(44, 50, 70, 0.726);
+    display: block;
+    padding: .25em .5em;
+  }
+  #webSheetLink > h6 {
+    color: #585f6c;
+  }
+  #webSheetLink > span {
+    font-size: .65em;
+    color: #e05656e1;
+    font-weight: bold;
+  }
 
 } /* ---------- END POINT OF MOBILE MEDIA QUERY ---------- */
 
